@@ -1,4 +1,3 @@
-
 <?php
 
 namespace App\Controllers;
@@ -14,13 +13,9 @@ class ContactController
         $this->contactModel = new ContactModel();
     }
 
-    /**
-     * Display all contacts.
-     */
     public function index(): void
     {
         $search = trim($_GET['search'] ?? '');
-
         $contacts = $this->contactModel->getAll($search);
 
         $this->render('contacts/index', [
@@ -29,9 +24,6 @@ class ContactController
         ]);
     }
 
-    /**
-     * Display the create contact form.
-     */
     public function create(): void
     {
         $this->render('contacts/create', [
@@ -40,9 +32,6 @@ class ContactController
         ]);
     }
 
-    /**
-     * Process new contact submission.
-     */
     public function store(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -50,11 +39,9 @@ class ContactController
         }
 
         $data = $this->getFormData();
-
         $errors = $this->validateContact($data);
 
-        if (empty($errors) &&
-            $this->contactModel->emailExists($data['email'])) {
+        if (empty($errors) && $this->contactModel->emailExists($data['email'])) {
             $errors['email'] = 'This email already exists.';
         }
 
@@ -67,15 +54,10 @@ class ContactController
         }
 
         $this->contactModel->create($data);
-
         $_SESSION['success'] = 'Contact created successfully!';
-
         $this->redirect('/');
     }
 
-    /**
-     * Display the edit contact form.
-     */
     public function edit(): void
     {
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -99,9 +81,6 @@ class ContactController
         ]);
     }
 
-    /**
-     * Process contact update.
-     */
     public function update(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -123,11 +102,9 @@ class ContactController
         }
 
         $data = $this->getFormData();
-
         $errors = $this->validateContact($data);
 
-        if (empty($errors) &&
-            $this->contactModel->emailExists($data['email'], $id)) {
+        if (empty($errors) && $this->contactModel->emailExists($data['email'], $id)) {
             $errors['email'] = 'This email already exists.';
         }
 
@@ -141,15 +118,10 @@ class ContactController
         }
 
         $this->contactModel->update($id, $data);
-
         $_SESSION['success'] = 'Contact updated successfully!';
-
         $this->redirect('/');
     }
 
-    /**
-     * Delete a contact.
-     */
     public function delete(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -171,15 +143,10 @@ class ContactController
         }
 
         $this->contactModel->delete($id);
-
         $_SESSION['success'] = 'Contact deleted successfully!';
-
         $this->redirect('/');
     }
 
-    /**
-     * Get and clean form data.
-     */
     private function getFormData(): array
     {
         return [
@@ -191,9 +158,6 @@ class ContactController
         ];
     }
 
-    /**
-     * Validate contact information.
-     */
     private function validateContact(array $data): array
     {
         $errors = [];
@@ -215,12 +179,9 @@ class ContactController
         return $errors;
     }
 
-    /**
-     * Load a view inside the shared layout.
-     */
     private function render(string $view, array $data = []): void
     {
-        extract($data);
+        extract($data, EXTR_SKIP);
 
         $viewFile = dirname(__DIR__) . '/views/' . $view . '.php';
 
@@ -235,18 +196,12 @@ class ContactController
         require dirname(__DIR__) . '/views/layout.php';
     }
 
-    /**
-     * Redirect to another route.
-     */
     private function redirect(string $route): void
     {
         header('Location: ?route=' . urlencode($route));
         exit;
     }
 
-    /**
-     * Display a 404 response.
-     */
     private function notFound(): void
     {
         http_response_code(404);
