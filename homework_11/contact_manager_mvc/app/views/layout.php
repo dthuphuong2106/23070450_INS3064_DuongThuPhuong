@@ -1,9 +1,7 @@
-
 <?php
 $successMessage = $_SESSION['success'] ?? '';
 unset($_SESSION['success']);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,33 +11,28 @@ unset($_SESSION['success']);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<header class="header">
+    <div class="container header-inner">
+        <h1>Contact Manager</h1>
+        <nav>
+            <a href="?route=%2F">Home</a>
+            <a href="?route=%2Fcreate">Add Contact</a>
+        </nav>
+    </div>
+</header>
 
-    <header class="header">
-        <div class="container">
-            <h1>Contact Manager</h1>
-
-            <nav>
-                <a href="?route=%2F">Home</a>
-                <a href="?route=%2Fcreate">Add Contact</a>
-            </nav>
+<main class="container main-content">
+    <?php if ($successMessage !== ''): ?>
+        <div class="alert success">
+            <?= htmlspecialchars($successMessage, ENT_QUOTES, 'UTF-8') ?>
         </div>
-    </header>
+    <?php endif; ?>
 
-    <main class="container">
+    <?= $content ?>
+</main>
 
-        <?php if ($successMessage !== ''): ?>
-            <div class="alert success">
-                <?= htmlspecialchars($successMessage, ENT_QUOTES, 'UTF-8') ?>
-            </div>
-        <?php endif; ?>
-
-        <?= $content ?>
-
-    </main>
-
-    <footer>
-        <p>Contact Manager - Web 2 Project</p>
-    </footer>
-
+<footer>
+    <p>Contact Manager - Web 2 Project</p>
+</footer>
 </body>
 </html>
