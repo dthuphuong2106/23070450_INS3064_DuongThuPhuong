@@ -1,6 +1,4 @@
-
 <?php
-
 return [
     'host' => 'localhost',
     'dbname' => 'contact_manager',
