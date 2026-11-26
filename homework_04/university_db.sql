@@ -7,6 +7,17 @@
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
+/*
+========================================================
+Name: Duong Thu Phuong
+Student ID: 23070450
+Assignment: Homework 4 - University Database
+Date: 2026-10-04
+Description: Create a university database with tables,
+constraints, relationships and sample data.
+========================================================
+*/
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
