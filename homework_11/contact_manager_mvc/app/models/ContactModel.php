@@ -1,56 +1,46 @@
-
 <?php
 
 namespace App\Models;
 
-use PDO;
-
 class ContactModel extends Model
 {
-    /**
-     * Get all contacts.
-     * Supports searching by name, email or phone.
-     */
     public function getAll(string $search = ''): array
     {
         if ($search !== '') {
             $sql = "SELECT * FROM contacts
-                    WHERE name LIKE :search
-                    OR email LIKE :search
-                    OR phone LIKE :search
+                    WHERE name LIKE :name
+                       OR email LIKE :email
+                       OR phone LIKE :phone
                     ORDER BY id DESC";
 
             $stmt = $this->db->prepare($sql);
+            $keyword = '%' . $search . '%';
 
             $stmt->execute([
-                'search' => '%' . $search . '%'
+                'name' => $keyword,
+                'email' => $keyword,
+                'phone' => $keyword
             ]);
         } else {
-            $sql = "SELECT * FROM contacts ORDER BY id DESC";
-
-            $stmt = $this->db->prepare($sql);
+            $stmt = $this->db->prepare(
+                'SELECT * FROM contacts ORDER BY id DESC'
+            );
             $stmt->execute();
         }
 
         return $stmt->fetchAll();
     }
 
-    /**
-     * Get one contact by ID.
-     */
     public function getById(int $id): array|false
     {
-        $sql = "SELECT * FROM contacts WHERE id = :id";
-
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare(
+            'SELECT * FROM contacts WHERE id = :id'
+        );
         $stmt->execute(['id' => $id]);
 
         return $stmt->fetch();
     }
 
-    /**
-     * Create a new contact.
-     */
     public function create(array $data): bool
     {
         $sql = "INSERT INTO contacts
@@ -61,17 +51,14 @@ class ContactModel extends Model
         $stmt = $this->db->prepare($sql);
 
         return $stmt->execute([
-            'name'       => $data['name'],
-            'email'      => $data['email'],
-            'phone'      => $data['phone'],
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
             'group_name' => $data['group_name'],
-            'notes'      => $data['notes']
+            'notes' => $data['notes']
         ]);
     }
 
-    /**
-     * Update an existing contact.
-     */
     public function update(int $id, array $data): bool
     {
         $sql = "UPDATE contacts
@@ -86,42 +73,31 @@ class ContactModel extends Model
         $stmt = $this->db->prepare($sql);
 
         return $stmt->execute([
-            'name'       => $data['name'],
-            'email'      => $data['email'],
-            'phone'      => $data['phone'],
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
             'group_name' => $data['group_name'],
-            'notes'      => $data['notes'],
-            'id'         => $id
+            'notes' => $data['notes'],
+            'id' => $id
         ]);
     }
 
-    /**
-     * Delete a contact.
-     */
     public function delete(int $id): bool
     {
-        $sql = "DELETE FROM contacts WHERE id = :id";
-
-        $stmt = $this->db->prepare($sql);
+        $stmt = $this->db->prepare(
+            'DELETE FROM contacts WHERE id = :id'
+        );
 
         return $stmt->execute(['id' => $id]);
     }
 
-    /**
-     * Check whether an email already exists.
-     * Exclude current contact when updating.
-     */
-    public function emailExists(
-        string $email,
-        ?int $excludeId = null
-    ): bool {
-        $sql = "SELECT COUNT(*) FROM contacts
-                WHERE email = :email";
-
+    public function emailExists(string $email, ?int $excludeId = null): bool
+    {
+        $sql = 'SELECT COUNT(*) FROM contacts WHERE email = :email';
         $params = ['email' => $email];
 
         if ($excludeId !== null) {
-            $sql .= " AND id != :exclude_id";
+            $sql .= ' AND id != :exclude_id';
             $params['exclude_id'] = $excludeId;
         }
 
